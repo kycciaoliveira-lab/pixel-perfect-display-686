@@ -1,0 +1,24 @@
+name: Deploy para VM AWS
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Atualizar projeto na VM via SSH
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.VM_HOST }}
+          username: ${{ secrets.VM_USER }}
+          key: ${{ secrets.VM_SSH_KEY }}
+          script: |
+            set -e
+            cd ~/hyphas
+            git pull origin main
+            npm install
+            npm run build
+            sudo rsync -a --delete dist/ /var/www/hyphas/
+            sudo systemctl reload nginx
