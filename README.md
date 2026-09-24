@@ -29,15 +29,6 @@ npm run dev       # http://localhost:8080
 npm run build
 ```
 
-### Credenciais de demonstração
-
-| Campo | Valor |
-| --- | --- |
-| E-mail | `aluno@hyphas.art` |
-| Senha | `Hyphas@2026` |
-
-A autenticação é simulada no cliente (sem backend), conforme o escopo do projeto.
-
 ## Estrutura
 
 ```
