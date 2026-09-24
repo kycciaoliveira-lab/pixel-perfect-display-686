@@ -116,7 +116,53 @@ export type LoginResult =
   | { ok: true; session: Session }
   | { ok: false; error: string };
 
-export function login(rawEmail: string, password: string): LoginResult {
+const USERS_KEY = "hyphas.users";
+type StoredUser = { name: string; email: string; salt: string; hash: string };
+
+function readUsers(): StoredUser[] {
+  if (!browser()) return [];
+  try {
+    const parsed = JSON.parse(window.localStorage.getItem(USERS_KEY) || "[]");
+    return Array.isArray(parsed) ? parsed : [];
+  } catch {
+    return [];
+  }
+}
+
+/** A02/A07 — senhas nunca são guardadas em texto puro: SHA-256 com salt aleatório. */
+async function hashPassword(password: string, salt: string): Promise<string> {
+  const data = new TextEncoder().encode(`${salt}:${password}`);
+  const digest = await window.crypto.subtle.digest("SHA-256", data);
+  return Array.from(new Uint8Array(digest))
+    .map((b) => b.toString(16).padStart(2, "0"))
+    .join("");
+}
+
+export type RegisterResult = { ok: true } | { ok: false; error: string };
+
+export async function register(
+  rawName: string,
+  rawEmail: string,
+  password: string,
+): Promise<RegisterResult> {
+  const name = sanitizeText(rawName, 40);
+  const email = sanitizeText(rawEmail, 190).toLowerCase();
+  if (name.length < 2) return { ok: false, error: "Informe um nome válido." };
+  if (!isValidEmail(email)) return { ok: false, error: "Formato de e-mail inválido." };
+  const issues = validatePasswordStrength(password);
+  if (issues.length) return { ok: false, error: `A senha precisa de: ${issues.join(", ")}.` };
+  const users = readUsers();
+  if (email === DEMO_EMAIL || users.some((u) => u.email === email)) {
+    return { ok: false, error: "Não foi possível concluir o cadastro com este e-mail." };
+  }
+  const salt = createToken();
+  const hash = await hashPassword(password, salt);
+  users.push({ name, email, salt, hash });
+  window.localStorage.setItem(USERS_KEY, JSON.stringify(users));
+  return { ok: true };
+}
+
+export async function login(rawEmail: string, password: string): Promise<LoginResult> {
   const locked = lockoutSecondsLeft();
   if (locked > 0) {
     return {
@@ -127,8 +173,13 @@ export function login(rawEmail: string, password: string): LoginResult {
 
   const email = sanitizeText(rawEmail, 190).toLowerCase();
 
-  const ok = email === DEMO_EMAIL && password === DEMO_PASSWORD;
-  if (!ok) {
+  let name: string | null = null;
+  if (email === DEMO_EMAIL && password === DEMO_PASSWORD) name = "Kyccia";
+  else {
+    const user = readUsers().find((u) => u.email === email);
+    if (user && (await hashPassword(password, user.salt)) === user.hash) name = user.name;
+  }
+  if (!name) {
     const attempts = readAttempts();
     const count = attempts.count + 1;
     const lockedUntil = count >= MAX_ATTEMPTS ? Date.now() + LOCKOUT_MS : 0;
@@ -145,7 +196,7 @@ export function login(rawEmail: string, password: string): LoginResult {
   const session: Session = {
     token: createToken(),
     email,
-    name: "Kyccia",
+    name,
     expiresAt: Date.now() + SESSION_TTL_MS,
   };
   window.localStorage.setItem(SESSION_KEY, JSON.stringify(session));
