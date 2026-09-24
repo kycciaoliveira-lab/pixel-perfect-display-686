@@ -1,4 +1,4 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState, type FormEvent } from "react";
 
 import hero from "@/assets/hero.jpg";
@@ -53,7 +53,7 @@ function LoginPage() {
     return () => clearInterval(id);
   }, []);
 
-  function handleSubmit(event: FormEvent) {
+  async function handleSubmit(event: FormEvent) {
     event.preventDefault();
     const nextErrors: typeof errors = {};
 
@@ -71,7 +71,7 @@ function LoginPage() {
     setErrors(nextErrors);
     if (Object.keys(nextErrors).length) return;
 
-    const result = login(safeEmail, password);
+    const result = await login(safeEmail, password);
     if (!result.ok) {
       setErrors({ form: result.error });
       setLock(lockoutSecondsLeft());
@@ -177,6 +177,14 @@ function LoginPage() {
               {blocked ? `Bloqueado (${lock}s)` : "Entrar"}
             </button>
           </form>
+
+          <p className="mt-6 text-center text-sm text-muted-foreground">
+            Ainda não tem conta?{" "}
+            <Link to="/cadastro" className="font-medium text-primary hover:underline">
+              Cadastre-se
+            </Link>
+          </p>
+
 
           <div className="mt-8 rounded-xl border border-border bg-card/70 p-4 text-xs text-muted-foreground">
             <p className="font-medium text-foreground">Acesso de demonstração</p>
