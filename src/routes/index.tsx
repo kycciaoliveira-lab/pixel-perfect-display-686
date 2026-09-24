@@ -3,7 +3,6 @@ import { useEffect, useState, type FormEvent } from "react";
 
 import hero from "@/assets/hero.jpg";
 import {
-  DEMO_CREDENTIALS,
   isAuthenticated,
   isValidEmail,
   lockoutSecondsLeft,
@@ -184,14 +183,6 @@ function LoginPage() {
               Cadastre-se
             </Link>
           </p>
-
-
-          <div className="mt-8 rounded-xl border border-border bg-card/70 p-4 text-xs text-muted-foreground">
-            <p className="font-medium text-foreground">Acesso de demonstração</p>
-            <p className="mt-1">
-              {DEMO_CREDENTIALS.email} · {DEMO_CREDENTIALS.password}
-            </p>
-          </div>
         </div>
       </section>
     </main>
