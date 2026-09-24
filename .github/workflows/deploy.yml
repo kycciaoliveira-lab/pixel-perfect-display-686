@@ -19,6 +19,6 @@ jobs:
             cd ~/hyphas
             git pull origin main
             npm install
-            npm run build
-            sudo rsync -a --delete dist/ /var/www/hyphas/
-            sudo systemctl reload nginx
+            NITRO_PRESET=node-server npm run build
+            pm2 restart hyphas || PORT=3000 pm2 start .output/server/index.mjs --name hyphas
+            pm2 save
