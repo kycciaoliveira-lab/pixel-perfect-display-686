@@ -45,7 +45,7 @@ function Presentation() {
   const go = (next: number) => {
     const clamped = Math.max(0, Math.min(slides.length - 1, next));
     navigate({ to: "/apresentacao", search: { ...search, slide: clamped + 1 }, replace: true });
-    if (!search.presenter) channel.current?.postMessage({ index: clamped });
+    channel.current?.postMessage({ index: clamped });
   };
 
   useEffect(() => {
