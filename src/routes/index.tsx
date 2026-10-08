@@ -183,6 +183,9 @@ function LoginPage() {
               Cadastre-se
             </Link>
           </p>
+          <p className="mt-5 text-center text-sm">
+            <Link to="/apresentacao" search={{ slide: 1, print: false, presenter: false }} className="text-primary hover:underline">Apresentação do projeto</Link>
+          </p>
         </div>
       </section>
     </main>
