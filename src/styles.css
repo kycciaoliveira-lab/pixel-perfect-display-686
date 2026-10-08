@@ -247,9 +247,9 @@
 .terminal-label { display: flex; align-items: center; gap: 15px; margin-bottom: 35px; color: var(--slide-sun); }
 .slide-terminal code { display: block; font-size: 25px; line-height: 1.9; white-space: pre-wrap; overflow-wrap: anywhere; }
 .slide-terminal code > span { color: var(--slide-sun); }
-.slide-form-example { padding: 30px 44px; border: 2px solid var(--slide-surface); border-radius: 8px; }
-.slide-form-example > div { margin-top: 20px; }
-.example-field { padding: 15px 24px; margin-top: 8px; background: var(--slide-surface); font-size: 28px; border-radius: 6px; color: var(--slide-muted); }
+.slide-form-example { padding: 24px 36px; border: 2px solid var(--slide-surface); border-radius: 8px; }
+.slide-form-example > div { margin-top: 12px; }
+.example-field { padding: 12px 24px; margin-top: 6px; background: var(--slide-surface); font-size: 28px; border-radius: 6px; color: var(--slide-muted); }
 .slide-gallery { display: grid; grid-template-columns: repeat(3, 1fr); gap: 55px; }
 .slide-gallery img { width: 100%; height: 340px; object-fit: cover; border-radius: 6px; }
 .slide-gallery h3 { margin: 26px 0 18px; }

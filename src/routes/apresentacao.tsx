@@ -8,9 +8,9 @@ import { ScaledSlide } from "@/components/slides/ScaledSlide";
 export const Route = createFileRoute("/apresentacao")({
   ssr: false,
   validateSearch: (search: Record<string, unknown>) => ({
-    slide: Math.max(1, Math.min(slides.length, Number(search.slide) || 1)),
-    print: search.print === true || search.print === "true",
-    presenter: search.presenter === true || search.presenter === "true",
+    slide: Math.max(1, Math.min(slides.length, Number(search["slide"]) || 1)),
+    print: search["print"] === true || search["print"] === "true",
+    presenter: search["presenter"] === true || search["presenter"] === "true",
   }),
   head: () => ({ meta: [
     { title: "Hyphas — Apresentação do processo de execução" },
